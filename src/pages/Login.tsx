@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Apple, Mail, Phone, Facebook, Instagram, Chrome } from 'lucide-react';
+import nightpassLogo from '@/assets/nightpass-logo.png';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,13 +21,11 @@ const Login = () => {
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-12">
         {/* Logo and title */}
         <div className="text-center mb-12 animate-fade-in">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-[0_0_40px_hsl(38_92%_50%_/_0.3)]">
-            <span className="text-3xl font-display font-bold text-primary-foreground">N</span>
-          </div>
-          <h1 className="text-4xl font-display font-bold text-foreground mb-2">
-            Night<span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">Pass</span>
-          </h1>
-          <p className="text-muted-foreground text-lg">Sua noite começa aqui</p>
+          <img 
+            src={nightpassLogo} 
+            alt="NightPass Logo" 
+            className="w-40 h-40 mx-auto mb-6 object-contain drop-shadow-[0_0_30px_hsl(38_92%_50%_/_0.4)]"
+          />
         </div>
 
         {/* Login buttons */}
