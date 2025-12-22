@@ -24,7 +24,7 @@ const Login = () => {
           <img 
             src={nightpassLogo} 
             alt="NightPass Logo" 
-            className="w-40 h-40 mx-auto mb-6 object-contain drop-shadow-[0_0_30px_hsl(38_92%_50%_/_0.4)]"
+            className="w-48 h-48 mx-auto object-contain mix-blend-screen drop-shadow-[0_0_40px_hsl(38_92%_50%_/_0.5)]"
           />
         </div>
 
