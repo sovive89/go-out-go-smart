@@ -26,9 +26,8 @@ const Login = () => {
             <img 
               src={nightpassLogo} 
               alt="NightPass Logo" 
-              className="relative w-56 h-auto object-contain brightness-110"
+              className="relative w-56 h-auto object-contain"
               style={{ 
-                mixBlendMode: 'lighten',
                 filter: 'drop-shadow(0 0 30px hsl(38 92% 50% / 0.4))'
               }}
             />
