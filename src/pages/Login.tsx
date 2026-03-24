@@ -87,7 +87,7 @@ const Login = () => {
             
             {/* Tagline */}
             <p className="text-muted-foreground text-lg mt-6 tracking-wide">
-              Sua noite começa aqui
+              Gerencie seu bar de forma inteligente
             </p>
           </div>
 
