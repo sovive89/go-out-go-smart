@@ -48,7 +48,7 @@ const App = () => {
             )}
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/" element={<Auth />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/eventos" element={<Events />} />
                 <Route path="/evento/:id" element={<EventDetail />} />
