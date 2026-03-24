@@ -147,9 +147,9 @@ const Login = () => {
             <div className="animate-slide-up pt-8" style={{ animationDelay: '0.4s' }}>
               <div className="grid grid-cols-3 gap-4 text-center">
                 {[
-                  { icon: '🎫', label: 'Eventos' },
-                  { icon: '🍸', label: 'Bares' },
-                  { icon: '✨', label: 'Experiências' },
+                  { icon: '🍸', label: 'Cardápio' },
+                  { icon: '📊', label: 'Gestão' },
+                  { icon: '💰', label: 'Vendas' },
                 ].map((item, i) => (
                   <div 
                     key={item.label}
