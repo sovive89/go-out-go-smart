@@ -24,8 +24,9 @@ const StaffDashboard = () => {
   const [pendingItems, setPendingItems] = useState(0);
   const [sessions, setSessions] = useState<(Session & { clients: SessionClient[] })[]>([]);
   const [showNewSession, setShowNewSession] = useState(false);
-  const [tableNumber, setTableNumber] = useState('');
   const [clientName, setClientName] = useState('');
+  const [clientPhone, setClientPhone] = useState('');
+  const [creating, setCreating] = useState(false);
   const [creating, setCreating] = useState(false);
 
   const canManageSessions = role === 'admin' || role === 'attendant';
