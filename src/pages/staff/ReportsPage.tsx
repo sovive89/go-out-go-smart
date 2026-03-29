@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import pop9Logo from '@/assets/pop9-logo.png';
 
-type Period = 'today' | 'week' | 'month';
+type Period = 'today' | 'week' | 'month' | 'custom';
 
 interface OrderItemRow {
   quantity: number;
