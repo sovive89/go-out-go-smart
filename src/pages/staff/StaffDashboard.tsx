@@ -208,16 +208,17 @@ const StaffDashboard = () => {
                 <h3 className="font-semibold text-foreground text-sm">Abrir Comanda</h3>
                 <div className="grid grid-cols-2 gap-3">
                   <Input
-                    placeholder="Mesa (opcional)"
-                    value={tableNumber}
-                    onChange={e => setTableNumber(e.target.value)}
-                    className="rounded-xl bg-secondary/30 h-10"
-                  />
-                  <Input
-                    placeholder="Nome do cliente *"
+                    placeholder="Nome completo *"
                     value={clientName}
                     onChange={e => setClientName(e.target.value)}
                     className="rounded-xl bg-secondary/30 h-10"
+                  />
+                  <Input
+                    placeholder="(00) 00000-0000"
+                    value={clientPhone}
+                    onChange={e => setClientPhone(formatPhone(e.target.value))}
+                    className="rounded-xl bg-secondary/30 h-10"
+                    type="tel"
                   />
                 </div>
                 <Button
