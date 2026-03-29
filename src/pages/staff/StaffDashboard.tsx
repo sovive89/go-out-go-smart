@@ -24,8 +24,8 @@ const StaffDashboard = () => {
   const [pendingItems, setPendingItems] = useState(0);
   const [sessions, setSessions] = useState<(Session & { clients: SessionClient[] })[]>([]);
   const [showNewSession, setShowNewSession] = useState(false);
-  const [tableNumber, setTableNumber] = useState('');
   const [clientName, setClientName] = useState('');
+  const [clientPhone, setClientPhone] = useState('');
   const [creating, setCreating] = useState(false);
 
   const canManageSessions = role === 'admin' || role === 'attendant';
@@ -65,16 +65,24 @@ const StaffDashboard = () => {
   const roleIcon = role === 'admin' ? Settings : role === 'kitchen' ? ChefHat : Users;
   const RoleIcon = roleIcon;
 
+  const formatPhone = (val: string) => {
+    const digits = val.replace(/\D/g, '').slice(0, 11);
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  };
+
   const createSession = async () => {
     if (!clientName.trim()) { toast({ title: 'Informe o nome do cliente', variant: 'destructive' }); return; }
+    if (clientPhone.replace(/\D/g, '').length < 10) { toast({ title: 'Informe um celular válido', variant: 'destructive' }); return; }
     setCreating(true);
-    const { data: session, error } = await supabase.from('sessions').insert({ table_number: tableNumber || null, opened_by: user?.id }).select().single();
+    const { data: session, error } = await supabase.from('sessions').insert({ opened_by: user?.id }).select().single();
     if (error || !session) { toast({ title: 'Erro ao criar comanda', variant: 'destructive' }); setCreating(false); return; }
-    await supabase.from('session_clients').insert({ session_id: session.id, client_name: clientName.trim() });
+    await supabase.from('session_clients').insert({ session_id: session.id, client_name: clientName.trim(), client_phone: clientPhone.replace(/\D/g, '') } as any);
     toast({ title: 'Comanda aberta!' });
     setShowNewSession(false);
-    setTableNumber('');
     setClientName('');
+    setClientPhone('');
     setCreating(false);
     fetchAll();
   };
@@ -199,16 +207,17 @@ const StaffDashboard = () => {
                 <h3 className="font-semibold text-foreground text-sm">Abrir Comanda</h3>
                 <div className="grid grid-cols-2 gap-3">
                   <Input
-                    placeholder="Mesa (opcional)"
-                    value={tableNumber}
-                    onChange={e => setTableNumber(e.target.value)}
-                    className="rounded-xl bg-secondary/30 h-10"
-                  />
-                  <Input
-                    placeholder="Nome do cliente *"
+                    placeholder="Nome completo *"
                     value={clientName}
                     onChange={e => setClientName(e.target.value)}
                     className="rounded-xl bg-secondary/30 h-10"
+                  />
+                  <Input
+                    placeholder="(00) 00000-0000"
+                    value={clientPhone}
+                    onChange={e => setClientPhone(formatPhone(e.target.value))}
+                    className="rounded-xl bg-secondary/30 h-10"
+                    type="tel"
                   />
                 </div>
                 <Button
@@ -241,9 +250,7 @@ const StaffDashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {sessions.map((session, i) => {
                   const timeStr = new Date(session.opened_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                  const label = session.table_number
-                    ? `Mesa ${session.table_number}`
-                    : `#${session.id.slice(0, 6).toUpperCase()}`;
+                  const label = `Comanda #${session.id.slice(0, 6).toUpperCase()}`;
 
                   return (
                     <div

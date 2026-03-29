@@ -15,8 +15,15 @@ const SessionsPage = () => {
   const { user } = useAuth();
   const [sessions, setSessions] = useState<(Session & { clients: SessionClient[] })[]>([]);
   const [showNew, setShowNew] = useState(false);
-  const [tableNumber, setTableNumber] = useState('');
   const [clientName, setClientName] = useState('');
+  const [clientPhone, setClientPhone] = useState('');
+
+  const formatPhone = (val: string) => {
+    const digits = val.replace(/\D/g, '').slice(0, 11);
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  };
 
   const fetchSessions = async () => {
     const { data } = await supabase
@@ -31,13 +38,14 @@ const SessionsPage = () => {
 
   const createSession = async () => {
     if (!clientName.trim()) { toast({ title: 'Informe o nome do cliente', variant: 'destructive' }); return; }
-    const { data: session, error } = await supabase.from('sessions').insert({ table_number: tableNumber || null, opened_by: user?.id }).select().single();
+    if (clientPhone.replace(/\D/g, '').length < 10) { toast({ title: 'Informe um celular válido', variant: 'destructive' }); return; }
+    const { data: session, error } = await supabase.from('sessions').insert({ opened_by: user?.id }).select().single();
     if (error || !session) { toast({ title: 'Erro ao criar comanda', variant: 'destructive' }); return; }
-    await supabase.from('session_clients').insert({ session_id: session.id, client_name: clientName.trim() });
+    await supabase.from('session_clients').insert({ session_id: session.id, client_name: clientName.trim(), client_phone: clientPhone.replace(/\D/g, '') } as any);
     toast({ title: 'Comanda aberta!' });
     setShowNew(false);
-    setTableNumber('');
     setClientName('');
+    setClientPhone('');
     fetchSessions();
   };
 
@@ -72,8 +80,8 @@ const SessionsPage = () => {
         {showNew && (
           <div className="glass rounded-2xl p-4 space-y-3 animate-slide-up">
             <h3 className="font-semibold text-foreground">Nova Comanda</h3>
-            <Input placeholder="Mesa (opcional)" value={tableNumber} onChange={e => setTableNumber(e.target.value)} className="rounded-xl bg-secondary/30" />
-            <Input placeholder="Nome do cliente *" value={clientName} onChange={e => setClientName(e.target.value)} className="rounded-xl bg-secondary/30" />
+            <Input placeholder="Nome completo *" value={clientName} onChange={e => setClientName(e.target.value)} className="rounded-xl bg-secondary/30" />
+            <Input placeholder="(00) 00000-0000" value={clientPhone} onChange={e => setClientPhone(formatPhone(e.target.value))} type="tel" className="rounded-xl bg-secondary/30" />
             <div className="flex gap-2">
               <Button onClick={createSession} className="flex-1 rounded-xl">Abrir</Button>
               <Button variant="ghost" onClick={() => setShowNew(false)} className="rounded-xl"><X className="w-4 h-4" /></Button>
@@ -93,7 +101,7 @@ const SessionsPage = () => {
             <div className="p-4 border-b border-border/20 flex items-center justify-between">
               <div>
                 <p className="font-bold text-foreground">
-                  {session.table_number ? `Mesa ${session.table_number}` : `Comanda #${session.id.slice(0, 6).toUpperCase()}`}
+                  Comanda #{session.id.slice(0, 6).toUpperCase()}
                 </p>
                 <p className="text-xs text-muted-foreground">{new Date(session.opened_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
               </div>
