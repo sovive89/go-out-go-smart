@@ -8,29 +8,31 @@ Deno.serve(async () => {
 
   const { data: existingUsers } = await supabase.auth.admin.listUsers();
   const existing = existingUsers?.users?.find(u => u.email === "admin@pop9.com");
-  if (existing) {
-    await supabase.auth.admin.deleteUser(existing.id);
+  
+  if (!existing) {
+    return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
   }
 
-  const { data, error } = await supabase.auth.admin.createUser({
-    email: "admin@pop9.com",
+  // Update password and confirm email
+  const { data, error } = await supabase.auth.admin.updateUserById(existing.id, {
     password: "admin123",
-    email_confirm: true,
-    user_metadata: { full_name: "Admin POP9" }
+    email_confirm: true
   });
 
   if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });
 
+  // Ensure profile exists
   await supabase.from("profiles").upsert({
-    id: data.user.id,
+    id: existing.id,
     email: "admin@pop9.com",
     full_name: "Admin POP9"
   });
 
+  // Ensure role exists
   await supabase.from("user_roles").upsert({
-    user_id: data.user.id,
+    user_id: existing.id,
     role: "admin"
   }, { onConflict: "user_id,role" });
 
-  return new Response(JSON.stringify({ success: true, userId: data.user.id }));
+  return new Response(JSON.stringify({ success: true, userId: existing.id, confirmed: data.user.email_confirmed_at }));
 });
