@@ -66,16 +66,24 @@ const StaffDashboard = () => {
   const roleIcon = role === 'admin' ? Settings : role === 'kitchen' ? ChefHat : Users;
   const RoleIcon = roleIcon;
 
+  const formatPhone = (val: string) => {
+    const digits = val.replace(/\D/g, '').slice(0, 11);
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  };
+
   const createSession = async () => {
     if (!clientName.trim()) { toast({ title: 'Informe o nome do cliente', variant: 'destructive' }); return; }
+    if (clientPhone.replace(/\D/g, '').length < 10) { toast({ title: 'Informe um celular válido', variant: 'destructive' }); return; }
     setCreating(true);
-    const { data: session, error } = await supabase.from('sessions').insert({ table_number: tableNumber || null, opened_by: user?.id }).select().single();
+    const { data: session, error } = await supabase.from('sessions').insert({ opened_by: user?.id }).select().single();
     if (error || !session) { toast({ title: 'Erro ao criar comanda', variant: 'destructive' }); setCreating(false); return; }
-    await supabase.from('session_clients').insert({ session_id: session.id, client_name: clientName.trim() });
+    await supabase.from('session_clients').insert({ session_id: session.id, client_name: clientName.trim(), client_phone: clientPhone.replace(/\D/g, '') } as any);
     toast({ title: 'Comanda aberta!' });
     setShowNewSession(false);
-    setTableNumber('');
     setClientName('');
+    setClientPhone('');
     setCreating(false);
     fetchAll();
   };
