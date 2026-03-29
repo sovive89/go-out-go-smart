@@ -5,7 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import {
   ClipboardList, LogOut, Clock, Plus, X, ChefHat,
   Copy, UserPlus, XCircle, Settings, ShoppingBag, Flame,
-  ChevronDown, ChevronUp, User, DollarSign, RotateCcw
+  ChevronDown, ChevronUp, User, DollarSign, RotateCcw, BarChart3
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -213,9 +213,14 @@ const StaffDashboard = () => {
           </div>
           <div className="flex items-center gap-2">
             {role === 'admin' && (
-              <Button variant="outline" size="sm" onClick={() => navigate('/staff/admin')} className="rounded-xl gap-1.5 h-8 text-xs border-primary/30 text-primary">
-                <Settings className="w-3.5 h-3.5" /> Admin
-              </Button>
+              <>
+                <Button variant="outline" size="sm" onClick={() => navigate('/staff/reports')} className="rounded-xl gap-1.5 h-8 text-xs border-primary/30 text-primary">
+                  <BarChart3 className="w-3.5 h-3.5" /> Relatórios
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => navigate('/staff/admin')} className="rounded-xl gap-1.5 h-8 text-xs border-primary/30 text-primary">
+                  <Settings className="w-3.5 h-3.5" /> Admin
+                </Button>
+              </>
             )}
             <Button variant="ghost" size="icon" onClick={handleSignOut} className="text-muted-foreground hover:text-destructive h-8 w-8">
               <LogOut className="w-4 h-4" />
