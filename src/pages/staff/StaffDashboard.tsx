@@ -275,14 +275,19 @@ const StaffDashboard = () => {
                             key={client.id}
                             className="flex items-center justify-between bg-secondary/20 rounded-lg px-3 py-2"
                           >
-                            <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => navigate(`/order/${session.id}/${client.client_token}`)}
+                              className="flex items-center gap-2 group/client"
+                            >
                               <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
                                 <span className="text-[10px] font-bold text-primary">
                                   {client.client_name.charAt(0).toUpperCase()}
                                 </span>
                               </div>
-                              <span className="text-xs text-foreground font-medium">{client.client_name}</span>
-                            </div>
+                              <span className="text-xs text-foreground font-medium group-hover/client:text-primary transition-colors underline-offset-2 group-hover/client:underline">
+                                {client.client_name}
+                              </span>
+                            </button>
                             <button
                               onClick={() => copyLink(session.id, client.client_token)}
                               className="flex items-center gap-1 text-[10px] text-primary hover:text-accent transition-colors px-2 py-1 rounded-md hover:bg-primary/10"
