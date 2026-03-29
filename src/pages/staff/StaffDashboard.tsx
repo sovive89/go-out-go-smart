@@ -31,8 +31,6 @@ const StaffDashboard = () => {
   const [creating, setCreating] = useState(false);
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [orderModal, setOrderModal] = useState<{ sessionId: string; clientId: string; clientName: string } | null>(null);
-  const [expandedSession, setExpandedSession] = useState<string | null>(null);
-  const [sessionOrders, setSessionOrders] = useState<Record<string, any[]>>({});
 
   const canManageSessions = role === 'admin' || role === 'attendant';
 
