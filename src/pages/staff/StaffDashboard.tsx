@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import {
   ClipboardList, Users, LogOut, Clock, Plus, X, ChefHat,
-  Copy, UserPlus, XCircle, Settings, ShoppingBag, Flame
+  Copy, UserPlus, XCircle, Settings, ShoppingBag, Flame,
+  ChevronDown, ChevronUp, User, DollarSign, RotateCcw
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,6 +32,8 @@ const StaffDashboard = () => {
   const [creating, setCreating] = useState(false);
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [orderModal, setOrderModal] = useState<{ sessionId: string; clientId: string; clientName: string } | null>(null);
+  const [expandedSession, setExpandedSession] = useState<string | null>(null);
+  const [sessionOrders, setSessionOrders] = useState<Record<string, any[]>>({});
 
   const canManageSessions = role === 'admin' || role === 'attendant';
 
