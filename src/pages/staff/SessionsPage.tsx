@@ -103,7 +103,12 @@ const SessionsPage = () => {
             <div className="p-4 space-y-2">
               {session.clients?.map(client => (
                 <div key={client.id} className="flex items-center justify-between bg-secondary/20 rounded-xl px-3 py-2">
-                  <span className="text-sm text-foreground">{client.client_name}</span>
+                  <button
+                    onClick={() => navigate(`/order/${session.id}/${client.client_token}`)}
+                    className="text-sm text-foreground hover:text-primary transition-colors underline-offset-2 hover:underline"
+                  >
+                    {client.client_name}
+                  </button>
                   <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={() => {
                     navigator.clipboard.writeText(getClientLink(session.id, client.client_token));
                     toast({ title: 'Link copiado!' });
