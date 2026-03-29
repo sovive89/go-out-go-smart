@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import {
   UtensilsCrossed, LayoutGrid, Users, Key, ArrowLeft,
   Plus, Pencil, Trash2, Search, ChevronDown, ChevronRight,
-  Settings, BarChart3
+  Settings
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { MenuCategory, MenuItem, AppRole } from '@/types';
