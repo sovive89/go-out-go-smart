@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import {
-  ClipboardList, Users, LogOut, Clock, Plus, X, ChefHat,
+  ClipboardList, LogOut, Clock, Plus, X, ChefHat,
   Copy, UserPlus, XCircle, Settings, ShoppingBag, Flame,
   ChevronDown, ChevronUp, User, DollarSign, RotateCcw
 } from 'lucide-react';
