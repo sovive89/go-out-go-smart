@@ -29,7 +29,7 @@ const Auth = () => {
   useEffect(() => {
     if (user && !loading && role) {
       if (role === 'admin') navigate('/staff/admin');
-      else if (role === 'kitchen') navigate('/staff/kitchen');
+      else if (role === 'kitchen') navigate('/staff/cozinha');
       else navigate('/staff');
     }
   }, [user, loading, role, navigate]);
