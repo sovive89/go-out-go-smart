@@ -66,6 +66,10 @@ const SessionsPage = () => {
     return `${window.location.origin}/order/${sessionId}/${token}`;
   };
 
+  const getSessionClientInterfaceLink = (sessionId: string) => {
+    return `${window.location.origin}/order/${sessionId}`;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 glass border-b border-border/30">
@@ -106,6 +110,39 @@ const SessionsPage = () => {
                 <p className="text-xs text-muted-foreground">{new Date(session.opened_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
               </div>
               <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Ativa</Badge>
+            </div>
+
+            <div className="px-4 pt-3">
+              <p className="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">URL do cliente</p>
+              <p className="text-[11px] text-muted-foreground/80 mb-2">
+                Link que leva o cliente para abrir a comanda e iniciar a sessão.
+              </p>
+              <div className="flex items-center justify-between gap-2 bg-secondary/20 rounded-xl px-3 py-2">
+                <span className="text-xs text-foreground/80 truncate">{getSessionClientInterfaceLink(session.id)}</span>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 text-xs text-primary"
+                    onClick={() => {
+                      window.open(getSessionClientInterfaceLink(session.id), '_blank', 'noopener,noreferrer');
+                    }}
+                  >
+                    Abrir
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 text-xs text-primary"
+                    onClick={() => {
+                      navigator.clipboard.writeText(getSessionClientInterfaceLink(session.id));
+                      toast({ title: 'URL do cliente copiada!' });
+                    }}
+                  >
+                    <QrCode className="w-3 h-3 mr-1" /> Copiar
+                  </Button>
+                </div>
+              </div>
             </div>
 
             <div className="p-4 space-y-2">
