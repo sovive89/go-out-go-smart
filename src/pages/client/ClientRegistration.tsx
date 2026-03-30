@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { UtensilsCrossed, User, Phone, ArrowRight, AlertCircle } from 'lucide-react';
+import { UtensilsCrossed, User, Phone, Mail, ArrowRight, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const formatPhoneBR = (value: string) => {
@@ -20,12 +20,12 @@ const ClientRegistration = () => {
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
     const checkExistingSession = async () => {
-      // Se tiver um sessionId na URL, verifica se é válido e se o cliente já está nele
       if (urlSessionId) {
         const savedToken = localStorage.getItem(`client_token_${urlSessionId}`);
         const { data: session } = await supabase
@@ -56,7 +56,6 @@ const ClientRegistration = () => {
     try {
       let targetSessionId = urlSessionId;
 
-      // Se não houver sessionId na URL (QR Code genérico), criamos uma nova sessão (comanda)
       if (!targetSessionId) {
         const { data: newSession, error: sessionError } = await supabase
           .from('sessions')
@@ -71,20 +70,23 @@ const ClientRegistration = () => {
         targetSessionId = newSession.id;
       }
 
-      // Registra o cliente na sessão
+      // Registra o cliente na sessão com e-mail para CRM
       const { data: client, error: clientError } = await supabase
         .from('session_clients')
         .insert({
           session_id: targetSessionId,
           client_name: name.trim(),
           client_phone: phoneDigits,
+          client_email: email.trim() || null, // Novo campo para CRM
         })
         .select('client_token')
         .single();
 
-      if (clientError || !client) throw new Error('Erro ao registrar cliente');
+      if (clientError || !client) {
+        console.error('Erro Supabase:', clientError);
+        throw new Error('Erro ao registrar cliente. Verifique se a tabela session_clients possui a coluna client_email.');
+      }
 
-      // Salva o token para persistência
       localStorage.setItem(`client_token_${targetSessionId}`, client.client_token);
       
       toast({ 
@@ -112,39 +114,39 @@ const ClientRegistration = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 py-12">
+    <div className="min-h-screen bg-[#0F0F0F] flex flex-col items-center justify-center px-6 py-12 text-white">
       <div className="w-full max-w-sm space-y-10">
         {/* Logo & Welcome */}
         <div className="text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center mx-auto shadow-inner">
-            <UtensilsCrossed className="w-10 h-10 text-primary" />
+          <div className="w-20 h-20 rounded-3xl bg-[#FF8A00]/10 flex items-center justify-center mx-auto shadow-inner border border-[#FF8A00]/20">
+            <UtensilsCrossed className="w-10 h-10 text-[#FF8A00]" />
           </div>
           <div className="space-y-2">
-            <h1 className="font-display font-bold text-3xl text-foreground tracking-tight">PØP9 BAR</h1>
-            <div className="h-1 w-12 bg-primary mx-auto rounded-full" />
-            <p className="text-base text-muted-foreground font-medium">
+            <h1 className="font-display font-black text-4xl tracking-tighter italic">P<span className="text-[#FF8A00]">Ø</span>P9 BAR</h1>
+            <div className="h-1 w-12 bg-[#FF8A00] mx-auto rounded-full" />
+            <p className="text-base text-white/60 font-medium uppercase tracking-widest">
               Seja bem-vindo! 👋
             </p>
-            <p className="text-sm text-muted-foreground/80">
+            <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
               Preencha abaixo para abrir sua comanda digital.
             </p>
           </div>
         </div>
 
         {/* Form Card */}
-        <div className="glass p-8 rounded-[2.5rem] border border-border/40 shadow-2xl shadow-primary/5 animate-in fade-in zoom-in-95 duration-500 delay-200">
+        <div className="bg-[#1A1A1A] p-8 rounded-[2.5rem] border border-white/5 shadow-2xl animate-in fade-in zoom-in-95 duration-500 delay-200">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1">
+              <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">
                 Nome completo
               </label>
               <div className="relative group">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-[#FF8A00] transition-colors" />
                 <Input
                   placeholder="Como quer ser chamado?"
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="pl-12 h-14 rounded-2xl bg-secondary/20 border-border/20 focus:bg-secondary/40 transition-all text-base"
+                  className="pl-12 h-14 rounded-2xl bg-white/5 border-white/10 focus:bg-white/10 transition-all text-base text-white"
                   autoFocus
                   required
                 />
@@ -152,18 +154,34 @@ const ClientRegistration = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-1">
+              <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">
                 WhatsApp / Celular
               </label>
               <div className="relative group">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-[#FF8A00] transition-colors" />
                 <Input
                   placeholder="(00) 00000-0000"
                   value={phone}
                   onChange={e => setPhone(formatPhoneBR(e.target.value))}
-                  className="pl-12 h-14 rounded-2xl bg-secondary/20 border-border/20 focus:bg-secondary/40 transition-all text-base"
+                  className="pl-12 h-14 rounded-2xl bg-white/5 border-white/10 focus:bg-white/10 transition-all text-base text-white"
                   inputMode="tel"
                   required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-white/30 uppercase tracking-widest ml-1">
+                E-mail (CRM & Fidelidade)
+              </label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-[#FF8A00] transition-colors" />
+                <Input
+                  placeholder="seu@email.com"
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className="pl-12 h-14 rounded-2xl bg-white/5 border-white/10 focus:bg-white/10 transition-all text-base text-white"
                 />
               </div>
             </div>
@@ -171,10 +189,10 @@ const ClientRegistration = () => {
             <Button
               type="submit"
               disabled={!isValid || loading}
-              className="w-full h-14 rounded-2xl text-lg font-bold gap-3 mt-4 shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform"
+              className="w-full h-14 rounded-2xl text-lg font-black bg-[#FF8A00] text-black hover:bg-[#FF8A00]/90 gap-3 mt-4 shadow-lg shadow-[#FF8A00]/10 active:scale-[0.98] transition-transform"
             >
               {loading ? (
-                <div className="w-6 h-6 border-3 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                <div className="w-6 h-6 border-3 border-black border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
                   Abrir Comanda
@@ -186,13 +204,13 @@ const ClientRegistration = () => {
         </div>
 
         <div className="text-center space-y-4 animate-in fade-in duration-1000 delay-500">
-          <p className="text-[11px] text-muted-foreground/60 leading-relaxed px-4">
-            Ao abrir sua comanda, você concorda com os termos de uso do estabelecimento. Seus dados estão seguros.
+          <p className="text-[10px] text-white/20 font-bold uppercase tracking-widest leading-relaxed px-4">
+            Ao abrir sua comanda, você concorda com os termos de uso. Seus dados estão seguros.
           </p>
-          <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-tighter">
-            <div className="w-8 h-[1px] bg-border/30" />
-            Powered by Go Out Go Smart
-            <div className="w-8 h-[1px] bg-border/30" />
+          <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-white/10 uppercase tracking-tighter">
+            <div className="w-8 h-[1px] bg-white/5" />
+            PØP9 BAR - GESTÃO INTELIGENTE
+            <div className="w-8 h-[1px] bg-white/5" />
           </div>
         </div>
       </div>
