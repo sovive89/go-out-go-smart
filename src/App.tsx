@@ -14,6 +14,7 @@ import AdminPage from "./pages/staff/AdminPage";
 import AdminMenuPage from "./pages/staff/AdminMenuPage";
 import ReportsPage from "./pages/staff/ReportsPage";
 import ClientOrder from "./pages/client/ClientOrder";
+import ClientRegistration from "./pages/client/ClientRegistration";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
