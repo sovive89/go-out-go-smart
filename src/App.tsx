@@ -13,6 +13,9 @@ import SessionsPage from "./pages/manager/SessionsPage";
 import AdminPage from "./pages/manager/AdminPage";
 import AdminMenuPage from "./pages/staff/AdminMenuPage";
 import ReportsPage from "./pages/manager/ReportsPage";
+import SettingsPage from "./pages/manager/SettingsPage";
+import AdvancedReportsPage from "./pages/manager/AdvancedReportsPage";
+import CRMPage from "./pages/manager/CRMPage";
 import ClientHome from "./pages/client/ClientHome";
 import ClientOrder from "./pages/client/ClientOrder";
 import ClientRegistration from "./pages/client/ClientRegistration";
@@ -58,7 +61,8 @@ const App = () => {
               <Route path="/auth" element={<Auth />} />
 
               <Route path="/cliente" element={<ClientLayout />}>
-                <Route index element={<ClientHome />} />
+                <Route index element={<ClientRegistration />} />
+                <Route path="abrir" element={<ClientRegistration />} />
                 <Route path="pedido/:sessionId" element={<ClientRegistration />} />
                 <Route path="pedido/:sessionId/:clientToken" element={<ClientOrder />} />
               </Route>
@@ -71,9 +75,13 @@ const App = () => {
                 <Route path="admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminPage /></ProtectedRoute>} />
                 <Route path="admin/menu" element={<ProtectedRoute allowedRoles={['admin']}><AdminMenuPage /></ProtectedRoute>} />
                 <Route path="relatorios" element={<ProtectedRoute allowedRoles={['admin']}><ReportsPage /></ProtectedRoute>} />
+                <Route path="configuracoes" element={<ProtectedRoute allowedRoles={['admin']}><SettingsPage /></ProtectedRoute>} />
+                <Route path="relatorios-avancados" element={<ProtectedRoute allowedRoles={['admin']}><AdvancedReportsPage /></ProtectedRoute>} />
+                <Route path="crm" element={<ProtectedRoute allowedRoles={['admin']}><CRMPage /></ProtectedRoute>} />
               </Route>
 
               <Route path="/staff/*" element={<Navigate to="/gestor" replace />} />
+              <Route path="/abrir" element={<ClientRegistration />} />
               <Route path="/order/:sessionId" element={<ClientRegistration />} />
               <Route path="/order/:sessionId/:clientToken" element={<ClientOrder />} />
 

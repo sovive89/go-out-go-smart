@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -14,106 +14,99 @@ const formatPhoneBR = (value: string) => {
 };
 
 const ClientRegistration = () => {
-  const { sessionId } = useParams<{ sessionId: string }>();
+  const { sessionId: urlSessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sessionValid, setSessionValid] = useState<boolean | null>(null);
+  const [checking, setChecking] = useState(true);
 
-  // Validate session on mount
-  useState(() => {
-    const validate = async () => {
-      if (!sessionId) { setSessionValid(false); return; }
-      
-      // Check if there's a saved token for this session
-      const savedToken = localStorage.getItem(`client_token_${sessionId}`);
-      
-      const { data } = await supabase
-        .from('sessions')
-        .select('status')
-        .eq('id', sessionId)
-        .maybeSingle();
-      
-      const isActive = data?.status === 'active';
-      setSessionValid(isActive);
+  useEffect(() => {
+    const checkExistingSession = async () => {
+      // Se tiver um sessionId na URL, verifica se é válido e se o cliente já está nele
+      if (urlSessionId) {
+        const savedToken = localStorage.getItem(`client_token_${urlSessionId}`);
+        const { data: session } = await supabase
+          .from('sessions')
+          .select('status')
+          .eq('id', urlSessionId)
+          .maybeSingle();
 
-      // If session is active and we have a saved token, redirect automatically
-      if (isActive && savedToken) {
-        navigate(`/cliente/pedido/${sessionId}/${savedToken}`, { replace: true });
+        if (session?.status === 'active' && savedToken) {
+          navigate(`/cliente/pedido/${urlSessionId}/${savedToken}`, { replace: true });
+          return;
+        }
       }
+      setChecking(false);
     };
-    validate();
-  });
+    checkExistingSession();
+  }, [urlSessionId, navigate]);
 
   const phoneDigits = phone.replace(/\D/g, '');
   const isValid = name.trim().length >= 3 && phoneDigits.length === 11;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isValid || loading || !sessionId) return;
+    if (!isValid || loading) return;
 
     setLoading(true);
 
-    // Check if client with same phone already exists in this session
-    const { data: existing } = await supabase
-      .from('session_clients')
-      .select('client_token')
-      .eq('session_id', sessionId)
-      .eq('client_phone', phoneDigits)
-      .maybeSingle();
+    try {
+      let targetSessionId = urlSessionId;
 
-    if (existing) {
-      // Save to local storage for persistence
-      localStorage.setItem(`client_token_${sessionId}`, existing.client_token);
-      // Already registered, go directly to menu
-      navigate(`/cliente/pedido/${sessionId}/${existing.client_token}`, { replace: true });
-      return;
-    }
+      // Se não houver sessionId na URL (QR Code genérico), criamos uma nova sessão (comanda)
+      if (!targetSessionId) {
+        const { data: newSession, error: sessionError } = await supabase
+          .from('sessions')
+          .insert({
+            status: 'active',
+            opened_at: new Date().toISOString(),
+          })
+          .select()
+          .single();
 
-    const { data, error } = await supabase
-      .from('session_clients')
-      .insert({
-        session_id: sessionId,
-        client_name: name.trim(),
-        client_phone: phoneDigits,
-      })
-      .select('client_token')
-      .single();
+        if (sessionError || !newSession) throw new Error('Erro ao abrir comanda');
+        targetSessionId = newSession.id;
+      }
 
-    if (error || !data) {
-      toast({ title: 'Erro ao registrar', description: 'Tente novamente.', variant: 'destructive' });
+      // Registra o cliente na sessão
+      const { data: client, error: clientError } = await supabase
+        .from('session_clients')
+        .insert({
+          session_id: targetSessionId,
+          client_name: name.trim(),
+          client_phone: phoneDigits,
+        })
+        .select('client_token')
+        .single();
+
+      if (clientError || !client) throw new Error('Erro ao registrar cliente');
+
+      // Salva o token para persistência
+      localStorage.setItem(`client_token_${targetSessionId}`, client.client_token);
+      
+      toast({ 
+        title: 'Comanda aberta!', 
+        description: `Bem-vindo, ${name.split(' ')[0]}!`,
+      });
+
+      navigate(`/cliente/pedido/${targetSessionId}/${client.client_token}`, { replace: true });
+    } catch (error: any) {
+      toast({ 
+        title: 'Erro no cadastro', 
+        description: error.message || 'Tente novamente.', 
+        variant: 'destructive' 
+      });
       setLoading(false);
-      return;
     }
-
-    // Save to local storage for persistence
-    localStorage.setItem(`client_token_${sessionId}`, data.client_token);
-    navigate(`/cliente/pedido/${sessionId}/${data.client_token}`, { replace: true });
   };
 
-  if (sessionValid === null) {
+  if (checking) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (sessionValid === false) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6">
-        <div className="text-center space-y-4">
-          <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
-            <AlertCircle className="w-10 h-10 text-destructive" />
-          </div>
-          <h1 className="text-xl font-display font-bold text-foreground">Sessão inválida</h1>
-          <p className="text-muted-foreground text-sm max-w-xs mx-auto">
-            Este link não é válido ou a comanda foi encerrada. Peça um novo link ao atendente.
-          </p>
-        </div>
       </div>
     );
   }
@@ -127,7 +120,7 @@ const ClientRegistration = () => {
             <UtensilsCrossed className="w-10 h-10 text-primary" />
           </div>
           <div className="space-y-2">
-            <h1 className="font-display font-bold text-3xl text-foreground tracking-tight">POP9 BAR</h1>
+            <h1 className="font-display font-bold text-3xl text-foreground tracking-tight">PØP9 BAR</h1>
             <div className="h-1 w-12 bg-primary mx-auto rounded-full" />
             <p className="text-base text-muted-foreground font-medium">
               Seja bem-vindo! 👋
@@ -153,6 +146,7 @@ const ClientRegistration = () => {
                   onChange={e => setName(e.target.value)}
                   className="pl-12 h-14 rounded-2xl bg-secondary/20 border-border/20 focus:bg-secondary/40 transition-all text-base"
                   autoFocus
+                  required
                 />
               </div>
             </div>
@@ -169,6 +163,7 @@ const ClientRegistration = () => {
                   onChange={e => setPhone(formatPhoneBR(e.target.value))}
                   className="pl-12 h-14 rounded-2xl bg-secondary/20 border-border/20 focus:bg-secondary/40 transition-all text-base"
                   inputMode="tel"
+                  required
                 />
               </div>
             </div>
