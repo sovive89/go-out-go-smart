@@ -42,7 +42,7 @@ const SessionsPage = () => {
     const { data: session, error } = await supabase.from('sessions').insert({ opened_by: user?.id }).select().single();
     if (error || !session) { toast({ title: 'Erro ao criar comanda', variant: 'destructive' }); return; }
     await supabase.from('session_clients').insert({ session_id: session.id, client_name: clientName.trim(), client_phone: clientPhone.replace(/\D/g, '') } as any);
-    toast({ title: 'Comanda aberta!' });
+    await copyToClipboard(getSessionClientInterfaceLink(session.id), 'Comanda aberta! URL do cliente copiada.');
     setShowNew(false);
     setClientName('');
     setClientPhone('');
@@ -63,14 +63,31 @@ const SessionsPage = () => {
   };
 
   const getClientLink = (sessionId: string, token: string) => {
-    return `${window.location.origin}/order/${sessionId}/${token}`;
+    return `${window.location.origin}/cliente/pedido/${sessionId}/${token}`;
+  };
+
+  const getSessionClientInterfaceLink = (sessionId: string) => {
+    return `${window.location.origin}/cliente/pedido/${sessionId}`;
+  };
+
+  const copyToClipboard = async (text: string, successMessage: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({ title: successMessage });
+    } catch {
+      toast({
+        title: 'Não foi possível copiar automaticamente',
+        description: 'Copie manualmente o link exibido na tela.',
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 glass border-b border-border/30">
         <div className="container mx-auto px-4 py-3 flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/staff')}><ArrowLeft className="w-5 h-5" /></Button>
+          <Button variant="ghost" size="icon" onClick={() => navigate('/gestor')}><ArrowLeft className="w-5 h-5" /></Button>
           <h1 className="font-display font-bold text-lg text-foreground flex-1">Comandas</h1>
           <Button size="sm" onClick={() => setShowNew(true)} className="rounded-xl gap-1"><Plus className="w-4 h-4" /> Nova</Button>
         </div>
@@ -108,18 +125,49 @@ const SessionsPage = () => {
               <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Ativa</Badge>
             </div>
 
+            <div className="px-4 pt-3">
+              <p className="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">URL do cliente</p>
+              <p className="text-[11px] text-muted-foreground/80 mb-2">
+                Link que leva o cliente para abrir a comanda e iniciar a sessão.
+              </p>
+              <div className="flex items-center justify-between gap-2 bg-secondary/20 rounded-xl px-3 py-2">
+                <span className="text-xs text-foreground/80 truncate">{getSessionClientInterfaceLink(session.id)}</span>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 text-xs text-primary"
+                    onClick={() => {
+                      window.open(getSessionClientInterfaceLink(session.id), '_blank', 'noopener,noreferrer');
+                    }}
+                  >
+                    Abrir
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 text-xs text-primary"
+                    onClick={() => {
+                      copyToClipboard(getSessionClientInterfaceLink(session.id), 'URL do cliente copiada!');
+                    }}
+                  >
+                    <QrCode className="w-3 h-3 mr-1" /> Copiar
+                  </Button>
+                </div>
+              </div>
+            </div>
+
             <div className="p-4 space-y-2">
               {session.clients?.map(client => (
                 <div key={client.id} className="flex items-center justify-between bg-secondary/20 rounded-xl px-3 py-2">
                   <button
-                    onClick={() => navigate(`/order/${session.id}/${client.client_token}`)}
+                    onClick={() => navigate(`/cliente/pedido/${session.id}/${client.client_token}`)}
                     className="text-sm text-foreground hover:text-primary transition-colors underline-offset-2 hover:underline"
                   >
                     {client.client_name}
                   </button>
                   <Button size="sm" variant="ghost" className="h-7 text-xs text-primary" onClick={() => {
-                    navigator.clipboard.writeText(getClientLink(session.id, client.client_token));
-                    toast({ title: 'Link copiado!' });
+                    copyToClipboard(getClientLink(session.id, client.client_token), 'Link copiado!');
                   }}>
                     <QrCode className="w-3 h-3 mr-1" /> Link
                   </Button>
