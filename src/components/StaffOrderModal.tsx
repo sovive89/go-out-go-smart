@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import {
   X, Search, Plus, Minus, Send, ShoppingBag,
-  UtensilsCrossed, ChevronRight, Trash2
+  Wine, ChevronRight, Trash2
 } from 'lucide-react';
 import type { MenuCategory, MenuItem } from '@/types';
 
