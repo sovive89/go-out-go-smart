@@ -6,7 +6,8 @@ import {
   LogOut, Clock, Plus, Printer, CheckCircle2, 
   LayoutDashboard, ShoppingBag, Users, Settings, BarChart3,
   Search, Flame, User as UserIcon, QrCode, RotateCcw,
-  Wine, ChevronDown, ChevronUp, ExternalLink, Hash, XCircle
+  Wine, ChevronDown, ChevronUp, ExternalLink, Hash, XCircle,
+  LayoutGrid, List, Users as UsersIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
