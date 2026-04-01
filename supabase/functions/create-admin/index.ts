@@ -8,45 +8,62 @@ Deno.serve(async () => {
 
   const adminEmail = "ricardoferreiradonascimento89@gmail.com";
   const adminPassword = "123456";
+  const adminName = "Ricardo Ferreira do Nascimento";
 
-  // Find existing user
+  // 1. List all existing users
   const { data: existingUsers } = await supabase.auth.admin.listUsers();
-  const existing = existingUsers?.users?.find(u => u.email === adminEmail);
+  const users = existingUsers?.users || [];
+  
+  const deletedIds: string[] = [];
+  let adminUserId: string | null = null;
 
-  let userId: string;
+  // 2. Delete all NON-admin users first, keep admin for update
+  for (const user of users) {
+    if (user.email === adminEmail) {
+      adminUserId = user.id;
+      continue;
+    }
+    await supabase.from("user_roles").delete().eq("user_id", user.id);
+    await supabase.from("profiles").delete().eq("id", user.id);
+    const { error } = await supabase.auth.admin.deleteUser(user.id);
+    if (!error) deletedIds.push(user.id);
+  }
 
-  if (existing) {
-    // Update password
-    const { error } = await supabase.auth.admin.updateUserById(existing.id, {
+  // 3. If admin exists, update; otherwise create
+  if (adminUserId) {
+    await supabase.auth.admin.updateUserById(adminUserId, {
       password: adminPassword,
       email_confirm: true,
+      user_metadata: { full_name: adminName }
     });
-    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });
-    userId = existing.id;
   } else {
-    // Create admin user
     const { data, error } = await supabase.auth.admin.createUser({
       email: adminEmail,
       password: adminPassword,
       email_confirm: true,
-      user_metadata: { full_name: "Ricardo Ferreira" }
+      user_metadata: { full_name: adminName }
     });
     if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });
-    userId = data.user.id;
+    adminUserId = data.user.id;
   }
 
-  // Ensure profile
+  // 4. Ensure profile
   await supabase.from("profiles").upsert({
-    id: userId,
+    id: adminUserId,
     email: adminEmail,
-    full_name: "Ricardo Ferreira"
+    full_name: adminName
   });
 
-  // Ensure admin role
+  // 5. Ensure admin role
   await supabase.from("user_roles").upsert({
-    user_id: userId,
+    user_id: adminUserId,
     role: "admin"
   }, { onConflict: "user_id,role" });
 
-  return new Response(JSON.stringify({ success: true, userId }));
+  return new Response(JSON.stringify({ 
+    success: true, 
+    adminUserId,
+    deletedUsers: deletedIds.length,
+    message: `Reset complete. Only admin remains: ${adminEmail}`
+  }));
 });
