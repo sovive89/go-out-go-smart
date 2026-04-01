@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { Session, SessionClient } from '@/types';
 import OrderScanner from '@/components/OrderScanner';
 import StaffOrderModal from '@/components/StaffOrderModal';
+import CloseSessionModal from '@/components/CloseSessionModal';
 import pop9Logo from '@/assets/pop9-logo.png';
 
 interface SessionOrderItem {
