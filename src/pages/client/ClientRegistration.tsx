@@ -125,10 +125,10 @@ const ClientRegistration = () => {
             <h1 className="font-display font-black text-4xl tracking-tighter italic">P<span className="text-[#FF8A00]">Ø</span>P9 BAR</h1>
             <div className="h-1 w-12 bg-[#FF8A00] mx-auto rounded-full" />
             <p className="text-base text-white/60 font-medium uppercase tracking-widest">
-              Seja bem-vindo! 👋
+              Abra sua Comanda 🍻
             </p>
             <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
-              Preencha abaixo para abrir sua comanda digital.
+              Preencha seus dados para começar a pedir.
             </p>
           </div>
         </div>
