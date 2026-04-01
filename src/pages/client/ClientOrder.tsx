@@ -318,7 +318,7 @@ const ClientOrderInner = () => {
       <nav className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-border/30 safe-area-bottom">
         <div className="flex">
           {([
-            { id: 'menu' as const, label: 'Cardápio', icon: UtensilsCrossed },
+            { id: 'menu' as const, label: 'Cardápio', icon: Wine },
             { id: 'cart' as const, label: `Carrinho`, icon: ShoppingBag, badge: totalItems },
             { id: 'orders' as const, label: 'Pedidos', icon: Clock },
             { id: 'bill' as const, label: 'Conta', icon: CheckCircle2 },
