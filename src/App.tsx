@@ -84,7 +84,7 @@ const App = () => {
               <Route path="/staff/*" element={<Navigate to="/gestor" replace />} />
               <Route path="/abrir" element={<ClientRegistration />} />
               <Route path="/order/:sessionId" element={<ClientRegistration />} />
-              <Route path="/order/:sessionId/:clientToken" element={<ClientOrder />} />
+              <Route path="/order/:sessionId/:clientToken" element={<CartProvider><ClientOrder /></CartProvider>} />
 
               <Route path="*" element={<NotFound />} />
             </Routes>
