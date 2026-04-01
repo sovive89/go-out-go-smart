@@ -131,7 +131,7 @@ const StaffDashboard = () => {
 
   const filteredSessions = sessions.filter(s => 
     s.clients[0]?.client_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    s.clients[0]?.client_phone?.includes(searchQuery)
+    (s.clients[0] as any)?.client_phone?.includes(searchQuery)
   );
 
   return (
