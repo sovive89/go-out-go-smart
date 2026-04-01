@@ -298,11 +298,9 @@ const ClientOrderInner = () => {
       <header className="sticky top-0 z-50 glass border-b border-border/30">
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
-              <UtensilsCrossed className="w-4 h-4 text-primary" />
-            </div>
+            <img src={pop9Logo} alt="POP9 BAR" className="w-9 h-9 object-contain" style={{ mixBlendMode: 'lighten' }} />
             <div>
-              <h1 className="font-display font-bold text-base text-foreground leading-tight">POP9 BAR</h1>
+              <h1 className="font-display font-bold text-base text-foreground leading-tight">PØP9 BAR</h1>
               <p className="text-[11px] text-muted-foreground">Olá, {clientName} 👋</p>
             </div>
           </div>
