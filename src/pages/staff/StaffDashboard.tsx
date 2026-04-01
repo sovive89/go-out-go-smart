@@ -286,7 +286,7 @@ const StaffDashboard = () => {
           <OrderScanner 
             onClose={() => setShowScanner(false)} 
             onSuccess={() => {
-              fetchSessions();
+              fetchAll();
               setShowScanner(false);
             }} 
           />
