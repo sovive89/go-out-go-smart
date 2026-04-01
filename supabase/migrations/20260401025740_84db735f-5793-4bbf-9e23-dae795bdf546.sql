@@ -1,0 +1,1 @@
+CREATE POLICY "Public can create sessions" ON public.sessions FOR INSERT TO public WITH CHECK (true);
