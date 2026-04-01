@@ -9,38 +9,44 @@ Deno.serve(async () => {
   const adminEmail = "ricardoferreiradonascimento89@gmail.com";
   const adminPassword = "123456";
 
-  // Delete all existing users
+  // Find existing user
   const { data: existingUsers } = await supabase.auth.admin.listUsers();
-  if (existingUsers?.users) {
-    for (const user of existingUsers.users) {
-      await supabase.from("user_roles").delete().eq("user_id", user.id);
-      await supabase.from("profiles").delete().eq("id", user.id);
-      await supabase.auth.admin.deleteUser(user.id);
-    }
+  const existing = existingUsers?.users?.find(u => u.email === adminEmail);
+
+  let userId: string;
+
+  if (existing) {
+    // Update password
+    const { error } = await supabase.auth.admin.updateUserById(existing.id, {
+      password: adminPassword,
+      email_confirm: true,
+    });
+    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });
+    userId = existing.id;
+  } else {
+    // Create admin user
+    const { data, error } = await supabase.auth.admin.createUser({
+      email: adminEmail,
+      password: adminPassword,
+      email_confirm: true,
+      user_metadata: { full_name: "Ricardo Ferreira" }
+    });
+    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });
+    userId = data.user.id;
   }
 
-  // Create admin user
-  const { data, error } = await supabase.auth.admin.createUser({
-    email: adminEmail,
-    password: adminPassword,
-    email_confirm: true,
-    user_metadata: { full_name: "Ricardo Ferreira" }
-  });
-
-  if (error) return new Response(JSON.stringify({ error: error.message }), { status: 400 });
-
-  // Create profile
+  // Ensure profile
   await supabase.from("profiles").upsert({
-    id: data.user.id,
+    id: userId,
     email: adminEmail,
     full_name: "Ricardo Ferreira"
   });
 
-  // Assign admin role
+  // Ensure admin role
   await supabase.from("user_roles").upsert({
-    user_id: data.user.id,
+    user_id: userId,
     role: "admin"
   }, { onConflict: "user_id,role" });
 
-  return new Response(JSON.stringify({ success: true, userId: data.user.id }));
+  return new Response(JSON.stringify({ success: true, userId }));
 });
