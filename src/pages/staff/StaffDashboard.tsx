@@ -67,6 +67,7 @@ const StaffDashboard = () => {
   // Manual token confirm
   const [confirmToken, setConfirmToken] = useState('');
   const [showTokenModal, setShowTokenModal] = useState(false);
+  const [closeModal, setCloseModal] = useState<{ sessionId: string; clientName: string; total: number; items: { name: string; quantity: number; unitPrice: number }[]; openedAt: string } | null>(null);
 
   const fetchSessionOrders = useCallback(async (sessionId: string) => {
     const { data } = await supabase
