@@ -253,7 +253,7 @@ const StaffDashboard = () => {
             </div>
             <div className="flex items-center gap-2">
               {isActive && (
-                <button onClick={() => copyClientLink(session)} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors" title="Copiar link do cliente">
+                <button onClick={(e) => { e.stopPropagation(); copyClientLink(session); }} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors" title="Copiar link do cliente">
                   <ExternalLink className="w-4 h-4 text-white/40 hover:text-[#FF8A00]" />
                 </button>
               )}
