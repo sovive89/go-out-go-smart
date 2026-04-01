@@ -229,15 +229,9 @@ const StaffDashboard = () => {
         <CardHeader className="p-5 pb-3 space-y-0">
           <div className="flex items-start justify-between">
             <div className="space-y-1 flex-1 min-w-0">
-              <div className="text-left">
-                <CardTitle className="text-lg font-bold text-white group-hover:text-[#FF8A00] transition-colors truncate max-w-[180px]">
-                  {client?.client_name || 'Sem Nome'}
-                </CardTitle>
-              </div>
-                <CardTitle className="text-lg font-bold text-white group-hover/name:text-[#FF8A00] transition-colors truncate max-w-[180px] cursor-pointer">
-                  {client?.client_name || 'Sem Nome'}
-                </CardTitle>
-              </button>
+              <CardTitle className="text-lg font-bold text-white group-hover:text-[#FF8A00] transition-colors truncate max-w-[180px]">
+                {client?.client_name || 'Sem Nome'}
+              </CardTitle>
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge variant="outline" className="bg-white/5 border-white/10 text-[10px] text-white/60 font-medium py-0 h-5">
                   <Hash className="w-2.5 h-2.5 mr-0.5" />{session.id.slice(0, 4).toUpperCase()}
