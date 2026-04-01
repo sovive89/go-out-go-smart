@@ -498,6 +498,18 @@ const SessionDetailPage = () => {
           </Button>
         </div>
       </div>
+
+      {showCloseModal && client && (
+        <CloseSessionModal
+          sessionId={sessionId!}
+          clientName={client.client_name}
+          total={total}
+          items={allItems.map(it => ({ name: it.menu_item?.name || '', quantity: it.quantity, unitPrice: Number(it.unit_price) }))}
+          openedAt={session.opened_at}
+          onClose={() => setShowCloseModal(false)}
+          onClosed={() => { setShowCloseModal(false); fetchSession(); }}
+        />
+      )}
     </div>
   );
 };
