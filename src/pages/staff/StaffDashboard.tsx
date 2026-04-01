@@ -63,7 +63,7 @@ const StaffDashboard = () => {
   const [showScanner, setShowScanner] = useState(false);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<'active' | 'closed'>('active');
-  // Staff order modal
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [orderModal, setOrderModal] = useState<{ sessionId: string; clientId: string; clientName: string } | null>(null);
   // Manual token confirm
   const [confirmToken, setConfirmToken] = useState('');
