@@ -17,7 +17,6 @@ import ReportsPage from "./pages/manager/ReportsPage";
 import SettingsPage from "./pages/manager/SettingsPage";
 import AdvancedReportsPage from "./pages/manager/AdvancedReportsPage";
 import CRMPage from "./pages/manager/CRMPage";
-import ClientHome from "./pages/client/ClientHome";
 import ClientOrder from "./pages/client/ClientOrder";
 import ClientRegistration from "./pages/client/ClientRegistration";
 import ClientLayout from "./layouts/ClientLayout";
@@ -65,7 +64,7 @@ const App = () => {
                 <Route index element={<ClientRegistration />} />
                 <Route path="abrir" element={<ClientRegistration />} />
                 <Route path="pedido/:sessionId" element={<ClientRegistration />} />
-                <Route path="pedido/:sessionId/:clientToken" element={<ClientOrder />} />
+                <Route path="pedido/:sessionId/:clientToken" element={<CartProvider><ClientOrder /></CartProvider>} />
               </Route>
 
               <Route path="/gestor" element={<ProtectedRoute><ManagerLayout /></ProtectedRoute>}>
