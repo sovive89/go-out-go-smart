@@ -138,6 +138,7 @@ const SessionDetailPage = () => {
   };
 
   const formatTime = (iso: string) => new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const formatDateTime = (iso: string) => new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const getElapsed = (openedAt: string) => {
     const diff = Date.now() - new Date(openedAt).getTime();
     const h = Math.floor(diff / 3600000);
@@ -458,8 +459,20 @@ const SessionDetailPage = () => {
                 )}
                 <div className="flex justify-between">
                   <span className="text-white/40">Abertura</span>
-                  <span className="font-bold">{formatTime(session.opened_at)}</span>
+                  <span className="font-bold text-xs">{formatDateTime(session.opened_at)}</span>
                 </div>
+                {session.closed_at && (
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Fechamento</span>
+                    <span className="font-bold text-xs">{formatDateTime(session.closed_at)}</span>
+                  </div>
+                )}
+                {session.closed_at && (
+                  <div className="flex justify-between">
+                    <span className="text-white/40">Duração</span>
+                    <span className="font-bold text-xs">{getElapsed(session.opened_at)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-white/40">Status</span>
                   <Badge className={isActive ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}>
