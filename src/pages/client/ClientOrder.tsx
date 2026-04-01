@@ -263,8 +263,9 @@ const ClientOrderInner = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-6">
         <div className="text-center space-y-4">
-          <div className="w-20 h-20 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
-            <AlertCircle className="w-10 h-10 text-destructive" />
+          <img src={pop9Logo} alt="POP9 BAR" className="w-20 h-auto mx-auto object-contain mb-2" style={{ mixBlendMode: 'lighten', filter: 'drop-shadow(0 0 10px hsl(38 92% 50% / 0.2))' }} />
+          <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto">
+            <AlertCircle className="w-8 h-8 text-destructive" />
           </div>
           <h1 className="text-xl font-display font-bold text-foreground">Sessão inválida</h1>
           <p className="text-muted-foreground text-sm max-w-xs mx-auto">
