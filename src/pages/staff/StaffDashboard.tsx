@@ -225,22 +225,13 @@ const StaffDashboard = () => {
     const isActive = session.status === 'active';
 
     return (
-      <Card key={session.id} className={`bg-[#1A1A1A] border-white/5 overflow-hidden group hover:border-[#FF8A00]/30 transition-all duration-300 shadow-2xl ${!isActive ? 'opacity-70' : ''}`}>
+      <Card key={session.id} onClick={() => navigate(`/gestor/comanda/${session.id}`)} className={`bg-[#1A1A1A] border-white/5 overflow-hidden group hover:border-[#FF8A00]/30 transition-all duration-300 shadow-2xl cursor-pointer ${!isActive ? 'opacity-70' : ''}`}>
         <CardHeader className="p-5 pb-3 space-y-0">
           <div className="flex items-start justify-between">
             <div className="space-y-1 flex-1 min-w-0">
-              <button
-                onClick={() => {
-                  if (isActive && client) {
-                    setOrderModal({ sessionId: session.id, clientId: client.id, clientName: client.client_name });
-                  }
-                }}
-                className="text-left group/name"
-              >
-                <CardTitle className="text-lg font-bold text-white group-hover/name:text-[#FF8A00] transition-colors truncate max-w-[180px] cursor-pointer">
-                  {client?.client_name || 'Sem Nome'}
-                </CardTitle>
-              </button>
+              <CardTitle className="text-lg font-bold text-white group-hover:text-[#FF8A00] transition-colors truncate max-w-[180px]">
+                {client?.client_name || 'Sem Nome'}
+              </CardTitle>
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge variant="outline" className="bg-white/5 border-white/10 text-[10px] text-white/60 font-medium py-0 h-5">
                   <Hash className="w-2.5 h-2.5 mr-0.5" />{session.id.slice(0, 4).toUpperCase()}
@@ -262,7 +253,7 @@ const StaffDashboard = () => {
             </div>
             <div className="flex items-center gap-2">
               {isActive && (
-                <button onClick={() => copyClientLink(session)} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors" title="Copiar link do cliente">
+                <button onClick={(e) => { e.stopPropagation(); copyClientLink(session); }} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors" title="Copiar link do cliente">
                   <ExternalLink className="w-4 h-4 text-white/40 hover:text-[#FF8A00]" />
                 </button>
               )}
@@ -308,7 +299,7 @@ const StaffDashboard = () => {
           </div>
         </CardContent>
 
-        <CardFooter className="p-5 pt-3 bg-white/[0.02] border-t border-white/5 flex flex-col gap-3">
+        <CardFooter className="p-5 pt-3 bg-white/[0.02] border-t border-white/5 flex flex-col gap-3" onClick={e => e.stopPropagation()}>
           <div className="flex items-center justify-between w-full">
             <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">Total</span>
             <span className="text-xl font-black text-[#FF8A00]">R$ {total.toFixed(2)}</span>
@@ -316,9 +307,7 @@ const StaffDashboard = () => {
           <div className={`grid ${isActive ? 'grid-cols-3' : 'grid-cols-2'} gap-2 w-full`}>
             {isActive && (
               <Button
-                onClick={() => {
-                  if (client) setOrderModal({ sessionId: session.id, clientId: client.id, clientName: client.client_name });
-                }}
+                onClick={() => navigate(`/gestor/comanda/${session.id}`)}
                 variant="outline" size="sm"
                 className="bg-[#FF8A00]/10 border-[#FF8A00]/20 hover:bg-[#FF8A00]/20 text-[#FF8A00] rounded-xl h-9 text-[10px] font-bold gap-1"
               >

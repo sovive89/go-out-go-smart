@@ -9,6 +9,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import SplashScreen from "@/components/SplashScreen";
 import Auth from "./pages/Auth";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
+import SessionDetailPage from "./pages/manager/SessionDetailPage";
 import KitchenView from "./pages/manager/KitchenView";
 import SessionsPage from "./pages/manager/SessionsPage";
 import AdminPage from "./pages/manager/AdminPage";
@@ -70,6 +71,7 @@ const App = () => {
 
               <Route path="/gestor" element={<ProtectedRoute><ManagerLayout /></ProtectedRoute>}>
                 <Route index element={<ManagerDashboard />} />
+                <Route path="comanda/:sessionId" element={<ProtectedRoute allowedRoles={['admin', 'attendant']}><SessionDetailPage /></ProtectedRoute>} />
                 <Route path="cozinha" element={<ProtectedRoute allowedRoles={['admin', 'kitchen']}><KitchenView /></ProtectedRoute>} />
                 <Route path="sessoes" element={<ProtectedRoute allowedRoles={['admin', 'attendant']}><SessionsPage /></ProtectedRoute>} />
                 <Route path="sessoes/nova" element={<ProtectedRoute allowedRoles={['admin', 'attendant']}><SessionsPage /></ProtectedRoute>} />
