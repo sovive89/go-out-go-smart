@@ -278,6 +278,7 @@ export type Database = {
       }
       session_clients: {
         Row: {
+          client_email: string | null
           client_name: string
           client_phone: string | null
           client_token: string
@@ -286,6 +287,7 @@ export type Database = {
           session_id: string
         }
         Insert: {
+          client_email?: string | null
           client_name: string
           client_phone?: string | null
           client_token?: string
@@ -294,6 +296,7 @@ export type Database = {
           session_id: string
         }
         Update: {
+          client_email?: string | null
           client_name?: string
           client_phone?: string | null
           client_token?: string
