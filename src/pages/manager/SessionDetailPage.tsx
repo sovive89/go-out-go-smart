@@ -244,7 +244,7 @@ const SessionDetailPage = () => {
             <ExternalLink className="w-4 h-4" /> <span className="hidden sm:inline">Link</span>
           </Button>
           {isActive ? (
-            <Button onClick={closeSession} size="sm" className="bg-white text-black hover:bg-white/90 rounded-xl h-9 gap-1 font-bold text-xs">
+            <Button onClick={() => setShowCloseModal(true)} size="sm" className="bg-white text-black hover:bg-white/90 rounded-xl h-9 gap-1 font-bold text-xs">
               <CheckCircle2 className="w-4 h-4" /> Fechar
             </Button>
           ) : (
