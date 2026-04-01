@@ -380,7 +380,7 @@ const ClientOrderInner = () => {
 
           {filteredItems.length === 0 ? (
             <div className="text-center py-16">
-              <UtensilsCrossed className="w-12 h-12 text-muted-foreground/20 mx-auto mb-3" />
+              <Wine className="w-12 h-12 text-muted-foreground/20 mx-auto mb-3" strokeWidth={1.5} />
               <p className="text-muted-foreground text-sm">Nenhum item encontrado</p>
             </div>
           ) : (
