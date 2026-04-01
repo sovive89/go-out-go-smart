@@ -138,6 +138,7 @@ const SessionDetailPage = () => {
   };
 
   const formatTime = (iso: string) => new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const formatDateTime = (iso: string) => new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' });
   const getElapsed = (openedAt: string) => {
     const diff = Date.now() - new Date(openedAt).getTime();
     const h = Math.floor(diff / 3600000);
