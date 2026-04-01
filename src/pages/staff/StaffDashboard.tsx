@@ -246,7 +246,7 @@ const StaffDashboard = () => {
                 )}
                 {!isActive && session.closed_at && (
                   <Badge className="bg-white/5 text-white/40 border-white/10 text-[9px] py-0 h-4">
-                    Fechada {formatDate(session.closed_at)}
+                    Fechada {formatDateTime(session.closed_at)}
                   </Badge>
                 )}
               </div>
