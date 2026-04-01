@@ -70,21 +70,23 @@ const ClientRegistration = () => {
         targetSessionId = newSession.id;
       }
 
-      // Registra o cliente na sessão com e-mail para CRM
+      // Registra o cliente na sessão
+      const insertData: any = {
+        session_id: targetSessionId,
+        client_name: name.trim(),
+        client_phone: phoneDigits,
+      };
+      if (email.trim()) insertData.client_email = email.trim();
+
       const { data: client, error: clientError } = await supabase
         .from('session_clients')
-        .insert({
-          session_id: targetSessionId,
-          client_name: name.trim(),
-          client_phone: phoneDigits,
-          client_email: email.trim() || null, // Novo campo para CRM
-        })
+        .insert(insertData)
         .select('client_token')
         .single();
 
       if (clientError || !client) {
         console.error('Erro Supabase:', clientError);
-        throw new Error('Erro ao registrar cliente. Verifique se a tabela session_clients possui a coluna client_email.');
+        throw new Error('Erro ao registrar na comanda.');
       }
 
       localStorage.setItem(`client_token_${targetSessionId}`, client.client_token);
