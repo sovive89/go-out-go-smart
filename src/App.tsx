@@ -56,7 +56,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           {showSplash && !hasSeenSplash && <SplashScreen onComplete={handleSplashComplete} />}
-          <HashRouter>
+          <BrowserRouter>
             <Routes>
               <Route path="/" element={<Auth />} />
               <Route path="/auth" element={<Auth />} />
@@ -88,7 +88,7 @@ const App = () => {
 
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </HashRouter>
+          </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>
