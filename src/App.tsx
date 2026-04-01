@@ -71,6 +71,7 @@ const App = () => {
 
               <Route path="/gestor" element={<ProtectedRoute><ManagerLayout /></ProtectedRoute>}>
                 <Route index element={<ManagerDashboard />} />
+                <Route path="comanda/:sessionId" element={<ProtectedRoute allowedRoles={['admin', 'attendant']}><SessionDetailPage /></ProtectedRoute>} />
                 <Route path="cozinha" element={<ProtectedRoute allowedRoles={['admin', 'kitchen']}><KitchenView /></ProtectedRoute>} />
                 <Route path="sessoes" element={<ProtectedRoute allowedRoles={['admin', 'attendant']}><SessionsPage /></ProtectedRoute>} />
                 <Route path="sessoes/nova" element={<ProtectedRoute allowedRoles={['admin', 'attendant']}><SessionsPage /></ProtectedRoute>} />
