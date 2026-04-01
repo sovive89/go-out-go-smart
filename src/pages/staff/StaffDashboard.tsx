@@ -179,8 +179,6 @@ const StaffDashboard = () => {
         .filter(it => it.status !== 'cancelled')
         .reduce((s, it) => s + it.quantity * Number(it.unit_price), 0), 0);
   };
-
-  const formatTime = (isoString: string) => new Date(isoString).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   const formatDateTime = (isoString: string) => new Date(isoString).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 
   const getElapsed = (openedAt: string) => {
