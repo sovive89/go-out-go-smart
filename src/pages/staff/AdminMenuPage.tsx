@@ -82,7 +82,27 @@ const AdminMenuPage = () => {
   const resetForm = () => { setShowForm(false); setEditingCategory(null); setEditingItem(null); setCatName(''); setCatDesc(''); setItemName(''); setItemDesc(''); setItemPrice(''); setItemCategoryId(''); setItemImage(''); setItemStock('-1'); setItemStockAlert('5'); };
 
   const startEditCategory = (cat: MenuCategory) => { setActiveTab('categories'); setEditingCategory(cat); setCatName(cat.name); setCatDesc(cat.description || ''); setShowForm(true); };
-  const startEditItem = (item: MenuItem) => { setActiveTab('items'); setEditingItem(item); setItemName(item.name); setItemDesc(item.description || ''); setItemPrice(item.price.toString()); setItemCategoryId(item.category_id); setItemImage(item.image_url || ''); setShowForm(true); };
+  const startEditItem = (item: MenuItem) => { setActiveTab('items'); setEditingItem(item); setItemName(item.name); setItemDesc(item.description || ''); setItemPrice(item.price.toString()); setItemCategoryId(item.category_id); setItemImage(item.image_url || ''); setItemStock(((item as any).stock_quantity ?? -1).toString()); setItemStockAlert(((item as any).stock_alert_threshold ?? 5).toString()); setShowForm(true); };
+
+  const updateStock = async (itemId: string, newQty: number) => {
+    const item = items.find(i => i.id === itemId);
+    if (!item) return;
+    const prevStock = (item as any).stock_quantity ?? -1;
+    await supabase.from('menu_items').update({ stock_quantity: newQty }).eq('id', itemId);
+    // Record movement
+    const { data: { user } } = await supabase.auth.getUser();
+    await supabase.from('stock_movements' as any).insert({
+      menu_item_id: itemId,
+      movement_type: 'adjustment',
+      quantity: newQty - prevStock,
+      previous_stock: prevStock,
+      new_stock: newQty,
+      reason: 'Ajuste manual',
+      performed_by: user?.id || null,
+    });
+    toast({ title: 'Estoque atualizado!' });
+    fetchData();
+  };
 
   return (
     <div className="min-h-screen bg-background">
