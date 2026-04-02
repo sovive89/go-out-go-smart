@@ -54,7 +54,7 @@ const AdminMenuPage = () => {
 
   const saveItem = async () => {
     if (!itemName.trim() || !itemPrice || !itemCategoryId) { toast({ title: 'Preencha todos os campos', variant: 'destructive' }); return; }
-    const payload = { name: itemName, description: itemDesc || null, price: parseFloat(itemPrice), category_id: itemCategoryId, image_url: itemImage || null, sort_order: items.length };
+    const payload = { name: itemName, description: itemDesc || null, price: parseFloat(itemPrice), category_id: itemCategoryId, image_url: itemImage || null, sort_order: items.length, stock_quantity: parseInt(itemStock), stock_alert_threshold: parseInt(itemStockAlert) };
     if (editingItem) {
       await supabase.from('menu_items').update(payload).eq('id', editingItem.id);
     } else {
