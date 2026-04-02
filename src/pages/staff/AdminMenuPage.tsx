@@ -28,6 +28,8 @@ const AdminMenuPage = () => {
   const [itemPrice, setItemPrice] = useState('');
   const [itemCategoryId, setItemCategoryId] = useState('');
   const [itemImage, setItemImage] = useState('');
+  const [itemStock, setItemStock] = useState('-1');
+  const [itemStockAlert, setItemStockAlert] = useState('5');
 
   const fetchData = async () => {
     const { data: cats } = await supabase.from('menu_categories').select('*').order('sort_order');
