@@ -353,6 +353,9 @@ const StaffDashboard = () => {
             <Button variant="ghost" size="sm" onClick={() => navigate('/gestor/admin/menu')} className="rounded-lg text-white/60 hover:text-white gap-2 h-9">
               <ShoppingBag className="w-4 h-4" /> Cardápio
             </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/gestor/estoque')} className="rounded-lg text-white/60 hover:text-white gap-2 h-9">
+              <Package className="w-4 h-4" /> Estoque
+            </Button>
           </div>
         </div>
 
