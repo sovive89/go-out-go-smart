@@ -82,6 +82,7 @@ const App = () => {
                 <Route path="configuracoes" element={<ProtectedRoute allowedRoles={['admin']}><SettingsPage /></ProtectedRoute>} />
                 <Route path="relatorios-avancados" element={<ProtectedRoute allowedRoles={['admin']}><AdvancedReportsPage /></ProtectedRoute>} />
                 <Route path="crm" element={<ProtectedRoute allowedRoles={['admin']}><CRMPage /></ProtectedRoute>} />
+                <Route path="estoque" element={<ProtectedRoute allowedRoles={['admin']}><StockPage /></ProtectedRoute>} />
               </Route>
 
               <Route path="/staff/*" element={<Navigate to="/gestor" replace />} />
