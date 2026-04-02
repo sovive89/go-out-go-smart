@@ -234,6 +234,10 @@ const ClientOrderInner = () => {
     }));
 
     await supabase.from('order_items').insert(orderItems);
+
+    // Decrement stock for each item
+    for (const ci of cartItems) {
+      await supabase.rpc('decrement_stock', { _menu_item_id: ci.menuItem.id, _quantity: ci.quantity });
     clearCart();
     setSubmitting(false);
     toast({ title: 'Pedido enviado! 🎉', description: 'Acompanhe o status na aba Pedidos.' });
