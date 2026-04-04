@@ -192,6 +192,18 @@ const SessionDetailPage = () => {
       const { error: iErr } = await supabase.from('order_items').insert(items);
       if (iErr) throw iErr;
 
+      // Decrement stock for each item
+      const { data: { user } } = await supabase.auth.getUser();
+      for (const entry of cart) {
+        if (entry.item.stock_quantity !== -1) {
+          await supabase.rpc('decrement_stock', {
+            _menu_item_id: entry.item.id,
+            _quantity: entry.quantity,
+            _performed_by: user?.id,
+          });
+        }
+      }
+
       toast({ title: 'Pedido lançado com sucesso!' });
       setCart([]);
       setShowMenu(false);

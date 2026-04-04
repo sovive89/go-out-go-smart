@@ -33,6 +33,8 @@ export interface MenuItem {
   image_url: string | null;
   is_active: boolean;
   sort_order: number;
+  stock_quantity: number;
+  stock_alert_threshold: number;
   category?: MenuCategory;
 }
 
